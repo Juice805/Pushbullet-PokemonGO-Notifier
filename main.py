@@ -16,10 +16,6 @@ if __name__ == '__main__':
     pb = Pushbullet('key')
     gmaps = Client('api_key)
 
-        # Log in with a Google or Pokemon Trainer Club account
-    #print client.login_with_pokemon_trainer('username', 'password')
-    print client.login_with_google('username', 'password')
-
 
     #bounds = client.get_bounds_for_address('Yosemite, CA')
     bounds = (
@@ -38,6 +34,10 @@ if __name__ == '__main__':
 
     while 1:
         try:
+                
+                # Log in with a Google or Pokemon Trainer Club account
+            #print client.login_with_pokemon_trainer('username', 'password')
+            print client.login_with_google('username', 'password')
             
             # Get specific Pokemon Go API endpoint
             print client.get_specific_api_endpoint()
