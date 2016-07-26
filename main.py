@@ -1,3 +1,4 @@
+import os
 import time
 from datetime import timedelta
 from datetime import datetime
@@ -13,19 +14,24 @@ from utils.pokemon import is_unique
 
 if __name__ == '__main__':
     client = Skiplagged()
-    pb = Pushbullet('key')
-    gmaps = Client('api_key)
+    pb = Pushbullet(os.getenv("PB_KEY"))
+    gmaps = Client(os.getenv("GMAP_KEY"))
 
 
-    #bounds = client.get_bounds_for_address('Yosemite, CA')
+    #bounds = client.get_bounds_for_address('Isla Vista, CA')
     bounds = (
               (34.408359, -119.869816), # Lower left lat, lng
               (34.420923, -119.840293) # Upper right lat, lng
               )
     
-    my_channel = pb.channels[0]
+    
+    for channel in pb.channels:
+        print channel
+        if channel.channel_tag == '':
+          my_channel = channel
+    
+    
     print my_channel
-    #print my_channel.push_note("Hello World!","Hello Team Valor!")
     
     notify = ['Venasaur','Blastoise', 'Charizard', 'Raichu', 'Nidoqueen', 'Nidoking', 'Clefable', 'Ninetales', 'Vileplume', 'Golduck', 'Arcanine', 'Poliwrath', 'Kadabra', 'Alakazam', 'Machamp', 'Victreebel', 'Golem', 'Slowbro', 'Rapidash', 'Farfetch\'d', 'Dewgong', 'Muk', 'Cloyster', 'Gengar', 'Hypno', 'Exeggutor', 'Hitmonchan', 'Hitmonlee', 'Lickitung', 'Weezing', 'Rhydon', 'Chansey', 'Tangela', 'Kangaskhan', 'Starmie', 'Mr. Mime', 'Scyther', 'Jynx', 'Electabuzz', 'Magmar', 'Pinsir', 'Tauros', 'Gyarados', 'Lapras', 'Snorlax', 'Ditto', 'Vaporeon', 'Jolteon', 'Flareon', 'Porygon', 'Omastar', 'Kabutops', 'Aerodactyl', 'Snorlax', 'Articuno', 'Zapdos', 'Moltres', 'Dragonair', 'Dragonite', 'Mewtwo', 'Mew' ]
     
@@ -37,7 +43,7 @@ if __name__ == '__main__':
                 
                 # Log in with a Google or Pokemon Trainer Club account
             #print client.login_with_pokemon_trainer('username', 'password')
-            print client.login_with_google('username', 'password')
+            print client.login_with_google(os.getenv("USERNAME"), os.getenv("PASSWORD"))
             
             # Get specific Pokemon Go API endpoint
             print client.get_specific_api_endpoint()
@@ -48,6 +54,8 @@ if __name__ == '__main__':
             # Find pokemon
             for pokemon in client.find_pokemon(bounds):
                 print pokemon
+                print pokemon.get_expires_timestamp()
+                print time.time()
                 id = pokemon.get_name()
                 
                 if id in notify:
@@ -66,12 +74,11 @@ if __name__ == '__main__':
                     print mapslink
                     
 
-                    if is_unique(pokemon, archive):
+                    if is_unique(pokemon, archive) and int(pokemon.sec_till_expire()/60) > 0:
                         archive.append(pokemon)
                         my_channel.push_note("Wild "+ pokemon.get_name().upper() + " appeared!", message + '\n' + mapslink)
                         print "\nWild "+ pokemon.get_name().upper() + " appeared!\n", message + '\n' + mapslink
-
-                    
+                   
                     
                     print "%d in archive" % (len(archive))
                     

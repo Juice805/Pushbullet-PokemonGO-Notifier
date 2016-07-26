@@ -24,7 +24,7 @@ class Pokemon():
         return datetime.fromtimestamp(self.get_expires_timestamp())
         
     def sec_till_expire(self):
-        return int(self.get_expires_timestamp() - time.time())
+        return int(self.get_expires_timestamp()) - int(time.time())
     
     def __repr__(self):
         location = self.get_location()
@@ -44,9 +44,9 @@ def is_unique(pokemon, archive):
         latitude_diff = abs(poke.get_location()['latitude'] - poke.get_location()['latitude'])
         longitude_diff = abs(poke.get_location()['longitude'] - poke.get_location()['longitude'])
         
-        if timestamp_diff < 1.1:
-            if longitude_diff < .000002:
-                if latitude_diff < .000002:
+        if timestamp_diff < 2:
+            if longitude_diff < .00002:
+                if latitude_diff < .00002:
                     if poke.get_id() == pokemon.get_id():
                         print('%s ignored' % pokemon.get_name())
                         return False
